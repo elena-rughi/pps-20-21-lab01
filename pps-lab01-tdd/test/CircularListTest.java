@@ -1,17 +1,73 @@
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
+import lab01.tdd.CircularList;
+import lab01.tdd.CircularListImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * The test suite for testing the CircularList implementation
  */
 public class CircularListTest {
 
-    //TODO: test implementation
+    private CircularList list;
 
-    @Disabled
-    @Test public void testTodo(){
-        Assertions.fail();
+    @BeforeEach
+    void beforeEach(){
+        list = new CircularListImpl(List.of(1,2,3));
+    }
+
+    @Test
+    void testAddition(){
+        list.add(4);
+        assertEquals(List.of(1,2,3,4), list);
+    }
+
+    @Test
+    void testSize(){
+        assertEquals(3, list.size());
+    }
+
+    @Test
+    void testEmptyList(){
+        assertFalse(list.isEmpty());
+    }
+
+    @Test
+    void testNextElement(){
+        List<Integer> targetList = List.of(1,2,3,1);
+        List<Integer> testList = new ArrayList<>();
+
+        for (int i : IntStream.range(0, 4).toArray()){
+            list.next().ifPresent(val -> testList.add(val));
+        }
+
+        assertEquals(targetList, testList);
+    }
+
+    @Test
+    void testPrevElement(){
+        List<Integer> targetList = List.of(3,2,1,3);
+        List<Integer> testList = new ArrayList<>();
+
+        for (int i : IntStream.range(0, 4).toArray()){
+            list.previous().ifPresent(val -> testList.add(val));
+        }
+
+        assertEquals(targetList, testList);
+    }
+
+    @Test
+    void testReset(){
+        list.next();
+        list.next(); // 2
+        list.reset();
+        assertEquals(1, list.next());
     }
 
 }

@@ -19,13 +19,23 @@ public class CircularListTest {
 
     @BeforeEach
     void beforeEach(){
-        list = new CircularListImpl(List.of(1,2,3));
+        this.list = new CircularListImpl(List.of(1,2,3));
+    }
+
+    private List<Integer> printList(CircularList cList, int nElements){
+        List<Integer> retList = new ArrayList<>();
+
+        for (int i : IntStream.range(0, nElements).toArray()){
+            cList.next().ifPresent(val -> retList.add(val));
+        }
+        return  retList;
     }
 
     @Test
     void testAddition(){
         list.add(4);
-        assertEquals(List.of(1,2,3,4), list);
+        assertEquals(List.of(1,2,3,4), printList(list, list.size()));
+
     }
 
     @Test
@@ -41,33 +51,26 @@ public class CircularListTest {
     @Test
     void testNextElement(){
         List<Integer> targetList = List.of(1,2,3,1);
-        List<Integer> testList = new ArrayList<>();
 
-        for (int i : IntStream.range(0, 4).toArray()){
-            list.next().ifPresent(val -> testList.add(val));
-        }
-
-        assertEquals(targetList, testList);
+        assertEquals(targetList, printList(list, 4));
     }
 
     @Test
     void testPrevElement(){
         List<Integer> targetList = List.of(3,2,1,3);
         List<Integer> testList = new ArrayList<>();
-
         for (int i : IntStream.range(0, 4).toArray()){
             list.previous().ifPresent(val -> testList.add(val));
         }
-
         assertEquals(targetList, testList);
     }
 
     @Test
     void testReset(){
-        list.next();
+        list.next(); // 1
         list.next(); // 2
         list.reset();
-        assertEquals(1, list.next());
+        assertEquals(1, list.next().get());
     }
 
 }

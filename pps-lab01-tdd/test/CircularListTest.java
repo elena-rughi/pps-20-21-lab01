@@ -19,23 +19,13 @@ public class CircularListTest {
 
     @BeforeEach
     void beforeEach(){
-        this.list = new CircularListImpl(List.of(1,2,3));
-    }
-
-    private List<Integer> printList(CircularList cList, int nElements){
-        List<Integer> retList = new ArrayList<>();
-
-        for (int i : IntStream.range(0, nElements).toArray()){
-            cList.next().ifPresent(val -> retList.add(val));
-        }
-        return  retList;
+        list = new CircularListImpl(List.of(1,2,3));
     }
 
     @Test
     void testAddition(){
         list.add(4);
         assertEquals(List.of(1,2,3,4), printList(list, list.size()));
-
     }
 
     @Test
@@ -59,9 +49,10 @@ public class CircularListTest {
     void testPrevElement(){
         List<Integer> targetList = List.of(3,2,1,3);
         List<Integer> testList = new ArrayList<>();
-        for (int i : IntStream.range(0, 4).toArray()){
-            list.previous().ifPresent(val -> testList.add(val));
-        }
+
+       IntStream.range(0, 4).forEach( i ->
+            list.previous().ifPresent(val -> testList.add(val)));
+
         assertEquals(targetList, testList);
     }
 
@@ -71,6 +62,16 @@ public class CircularListTest {
         list.next(); // 2
         list.reset();
         assertEquals(1, list.next().get());
+    }
+
+    // return circular list iterated with next() method n times
+    private List<Integer> printList(CircularList cList, int n){
+        List<Integer> retList = new ArrayList<>();
+
+        IntStream.range(0, n).forEach( i ->
+                cList.next().ifPresent(val -> retList.add(val)));
+
+        return  retList;
     }
 
 }

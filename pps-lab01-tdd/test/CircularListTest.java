@@ -1,5 +1,6 @@
 import lab01.tdd.CircularList;
 import lab01.tdd.CircularListImpl;
+import lab01.tdd.strategies.EvenStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +43,7 @@ public class CircularListTest {
     void testNextElement(){
         List<Integer> targetList = List.of(1,2,3,1);
 
-        assertEquals(targetList, printList(list, 4));
+        assertEquals(targetList, printList(list, targetList.size()));
     }
 
     @Test
@@ -63,6 +64,20 @@ public class CircularListTest {
         list.reset();
         assertEquals(1, list.next().get());
     }
+
+    @Test
+    void testNextWithEvenStrategy(){
+        CircularList sList = new CircularListImpl(List.of(1,2,6,7,8,3,4,5,9));
+
+        List<Integer> targetList = List.of(2,6,8,4,2,6);
+        List<Integer> testList = new ArrayList<>();
+
+        IntStream.range(0, targetList.size()).forEach( i ->
+                sList.next(new EvenStrategy()).ifPresent(val -> testList.add(val)));
+
+        assertEquals(targetList, testList);
+    }
+
 
     // return circular list iterated with next() method n times
     private List<Integer> printList(CircularList cList, int n){
